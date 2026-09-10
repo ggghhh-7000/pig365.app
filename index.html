@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pig365</title>
     <script>
-        // 檢查是否已登入
         const isLoggedIn = sessionStorage.getItem('isLoggedIn');
         if (isLoggedIn === 'true') {
-            // 已登入，跳轉至指定首頁網址
-            window.location.href = '/%252%2508%257755%25iuhb%25ou%25jjj%25&86557&)::6.html';
+            // 直接傳入原始特殊字串，不需手動加 %25 或 .html
+            window.location.href = '/%2%08%7755%iuhb%ou%jjj%&86557&)::6';
         } else {
-            // 未登入，跳轉至登入頁
             window.location.href = '/auth';
         }
     </script>
