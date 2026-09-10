@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pig365 - 帳號登入與註冊</title>
+    <title>pig365-apps-SS / WW / Ue</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -16,191 +16,62 @@
             background-color: #f5f5f7;
         }
 
-        .login-card {
+        .container {
             background: white;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 360px;
-            box-sizing: border-box;
-        }
-
-        h2 {
             text-align: center;
-            margin-bottom: 1.5rem;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 1.25rem;
             color: #333;
+            margin-bottom: 1.5rem;
+            word-break: break-all;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        label {
+        .btn {
             display: block;
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.3rem;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: #007aff;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
+            padding: 12px 20px;
             font-size: 1rem;
             font-weight: 600;
             color: white;
             background-color: #007aff;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
-            margin-top: 1rem;
+            text-decoration: none;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
-        button:disabled {
-            background-color: #a2c8f5;
+        .btn:hover {
+            background-color: #0056b3;
         }
 
-        .toggle-btn {
-            background: none;
-            color: #007aff;
-            border: none;
-            font-size: 0.9rem;
-            margin-top: 0.8rem;
-            cursor: pointer;
-            text-decoration: underline;
-            padding: 0;
+        .btn:active {
+            transform: scale(0.98);
         }
-
-        #msg {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            text-align: center;
-            min-height: 1.2em;
-        }
-
-        .error { color: #ff3b30; }
-        .success { color: #34c759; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <h2 id="title">Pig365 登入</h2>
-        <div class="form-group">
-            <label for="username">帳號</label>
-            <input type="text" id="username" placeholder="請輸入帳號" autocomplete="off">
+    <div class="container">
+        <h1>pig365-apps-SS / WW / Ue</h1>
+        <div class="btn-group">
+            <!-- 部署完其他子專案後，可將 href 改為子網站的正式網址（如 https://ss-pig365.pages.dev） -->
+            <a href="https://ss-pig365.pages.dev" class="btn" target="_blank" rel="noopener noreferrer">PigSS</a>
+            <a href="https://ww-pig365.pages.dev" class="btn" target="_blank" rel="noopener noreferrer">PigWW</a>
+            <a href="https://ue-pig365.pages.dev" class="btn" target="_blank" rel="noopener noreferrer">PigUe</a>
         </div>
-        <div class="form-group">
-            <label for="password">密碼</label>
-            <input type="password" id="password" placeholder="請輸入密碼">
-        </div>
-        
-        <button id="submitBtn" onclick="handleSubmit()">登入</button>
-        <button class="toggle-btn" id="toggleBtn" onclick="toggleMode()">沒有帳號？前往建立帳號</button>
-        
-        <div id="msg"></div>
     </div>
 
-    <script>
-        const BIN_ID = '6aa1715dac6210605ab87b62';
-        const MASTER_KEY = '$2a$10$Q3e6T7l53HKgJr3pc5tuW.5dTGTAyi6948TrSpoe7mNIZm6kaRMbm';
-
-        let isRegisterMode = false;
-
-        function toggleMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('title').innerText = isRegisterMode ? 'Pig365 建立新帳號' : 'Pig365 登入';
-            document.getElementById('submitBtn').innerText = isRegisterMode ? '建立帳號' : '登入';
-            document.getElementById('toggleBtn').innerText = isRegisterMode ? '已有帳號？前往登入' : '沒有帳號？前往建立帳號';
-            document.getElementById('msg').innerText = '';
-        }
-
-        async function handleSubmit() {
-            const userIn = document.getElementById('username').value.trim();
-            const passIn = document.getElementById('password').value.trim();
-            const msgEl = document.getElementById('msg');
-            const btn = document.getElementById('submitBtn');
-
-            if (!userIn || !passIn) {
-                msgEl.className = 'error';
-                msgEl.innerText = '請填寫帳號與密碼';
-                return;
-            }
-
-            msgEl.className = '';
-            msgEl.innerText = '處理中...';
-            btn.disabled = true;
-
-            try {
-                // 1. 先取得現有資料
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': MASTER_KEY }
-                });
-                if (!res.ok) throw new Error('連線失敗');
-                
-                const data = await res.json();
-                let users = Array.isArray(data.record) ? data.record : [];
-
-                if (isRegisterMode) {
-                    // === 註冊邏輯 ===
-                    if (users.some(u => u.username === userIn)) {
-                        msgEl.className = 'error';
-                        msgEl.innerText = '該帳號已存在！';
-                        return;
-                    }
-
-                    users.push({ username: userIn, password: passIn });
-
-                    // 更新寫回 JSONBin
-                    const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': MASTER_KEY
-                        },
-                        body: JSON.stringify(users)
-                    });
-
-                    if (!updateRes.ok) throw new Error('新增失敗');
-
-                    msgEl.className = 'success';
-                    msgEl.innerText = '帳號建立成功！已切換至登入模式';
-                    setTimeout(() => toggleMode(), 1200);
-
-                } else {
-                    // === 登入邏輯 ===
-                    const match = users.find(u => u.username === userIn && u.password === passIn);
-                    if (match) {
-                        msgEl.className = 'success';
-                        msgEl.innerText = '登入成功！跳轉中...';
-                        setTimeout(() => { window.location.href = '/'; }, 800);
-                    } else {
-                        msgEl.className = 'error';
-                        msgEl.innerText = '帳號或密碼錯誤';
-                    }
-                }
-            } catch (err) {
-                msgEl.className = 'error';
-                msgEl.innerText = '系統錯誤，請稍後再試';
-                console.error(err);
-            } finally {
-                btn.disabled = false;
-            }
-        }
-    </script>
 </body>
 </html>
