@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pig365 - 主控台</title>
+    <title>Pig365 - 控制中心</title>
     <script>
-        // 防護：若未登入直接開啟此網址，跳轉回登入頁
+        // 防護：未登入者自動退回登入頁
         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
             window.location.href = '/auth';
         }
@@ -14,58 +14,86 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #f5f5f7;
+            margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 90vh;
         }
         .card {
             background: white;
-            padding: 2rem;
-            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
             width: 90%;
-            max-width: 400px;
+            max-width: 360px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #1d1d1f;
+            margin-bottom: 0.5rem;
+        }
+        p.user-info {
+            color: #86868b;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
         }
         .btn-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 20px;
         }
         .btn {
-            padding: 12px;
+            padding: 14px;
             background: #007aff;
             color: white;
-            border-radius: 8px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .btn:active {
+            background: #0056b3;
         }
         .logout-btn {
-            margin-top: 20px;
+            margin-top: 2rem;
             background: none;
             border: none;
             color: #ff3b30;
+            font-size: 0.9rem;
+            font-weight: 500;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
+
     <div class="card">
-        <h1>歡迎進入 Pig365</h1>
-        <p>這裏是隱密首頁</p>
+        <h1>Pig365 控制中心</h1>
+        <p class="user-info" id="userDisplay">已安全登入</p>
         
         <div class="btn-group">
-            <a href="/ss" class="btn">PigSS</a>
-            <a href="/ww" class="btn">PigWW</a>
-            <a href="/ue" class="btn">PigUe</a>
+            <!-- 點擊跳轉至各子頁面或子應用 -->
+            <a href="ss.pig365.app.pages.dev" class="btn">PigSS</a>
+            <a href="ss.pig365.app.pages.dev" class="btn">PigWW</a>
+            <a href="ss.pig365.app.pages.dev" class="btn">PigUe</a>
         </div>
 
-        <button class="logout-btn" onclick="logout()">登出</button>
+        <button class="logout-btn" onclick="logout()">安全登出</button>
     </div>
 
     <script>
+        // 顯示當前登入者帳號
+        const user = sessionStorage.getItem('currentUser');
+        if (user) {
+            document.getElementById('userDisplay').innerText = `使用者：${user}`;
+        }
+
         function logout() {
             sessionStorage.removeItem('isLoggedIn');
             sessionStorage.removeItem('currentUser');
