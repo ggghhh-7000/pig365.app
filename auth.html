@@ -128,8 +128,8 @@
         const BIN_ID = '6aa1715dac6210605ab87b62';
         const MASTER_KEY = '$2a$10$Q3e6T7l53HKgJr3pc5tuW.5dTGTAyi6948TrSpoe7mNIZm6kaRMbm';
         
-        // 修正：直接傳入原始特殊字串，瀏覽器會自動對應至隱密首頁
-        const TARGET_HOME = '/%2%08%7755%iuhb%ou%jjj%&86557&)::6';
+        // 設定登入成功後的跳轉路徑
+        const TARGET_HOME = '/ommoniom.pig.home/page.php/pages.aspx';
 
         let isRegisterMode = false;
 
@@ -158,7 +158,6 @@
             btn.disabled = true;
 
             try {
-                // 1. 從 JSONBin 拉取使用者列表
                 const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
                     headers: { 'X-Master-Key': MASTER_KEY }
                 });
@@ -169,7 +168,6 @@
                 let users = Array.isArray(data.record) ? data.record : [];
 
                 if (isRegisterMode) {
-                    // === 註冊邏輯 ===
                     if (users.some(u => u.username === userIn)) {
                         msgEl.className = 'error';
                         msgEl.innerText = '該帳號已存在！';
@@ -178,7 +176,6 @@
 
                     users.push({ username: userIn, password: passIn });
 
-                    // 更新寫回 JSONBin
                     const updateRes = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                         method: 'PUT',
                         headers: {
@@ -195,17 +192,14 @@
                     setTimeout(() => toggleMode(), 1200);
 
                 } else {
-                    // === 登入邏輯 ===
                     const match = users.find(u => u.username === userIn && u.password === passIn);
                     if (match) {
                         msgEl.className = 'success';
                         msgEl.innerText = '登入成功！跳轉至首頁...';
                         
-                        // 寫入登入 Session 紀錄
                         sessionStorage.setItem('isLoggedIn', 'true');
                         sessionStorage.setItem('currentUser', userIn);
 
-                        // 800ms 後跳轉至指定特殊首頁網址
                         setTimeout(() => {
                             window.location.href = TARGET_HOME;
                         }, 800);
